@@ -3,113 +3,94 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🦇 CyberSentinel: Dark Ops</title>
+  <title>CyberSentinel: Dark Ops</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
   <style>
     body {
       margin: 0;
-      background: linear-gradient(135deg, #0a0a0a, #1c1c1c);
-      color: #e0e0e0;
+      background: #000;
+      color: #00ffe5;
       font-family: 'Courier New', monospace;
-      padding: 20px;
-      min-height: 100vh;
+      overflow-x: hidden;
     }
-    .container {
-      max-width: 1000px;
-      margin: auto;
-    }
-    h1, h2, h3 {
+    header {
       text-align: center;
-      color: #f5c518;
-      text-shadow: 0 0 15px #f5c518;
+      padding: 20px;
+      border-bottom: 2px solid #00ffe5;
+      box-shadow: 0 0 20px #00ffe5;
+    }
+    header h1 {
+      font-size: 2em;
+      color: #00ffe5;
+      text-shadow: 0 0 10px #00ffe5, 0 0 20px #00ffe5;
     }
     #map {
       width: 100%;
       height: 600px;
-      margin-top: 20px;
-      border: 2px solid #f5c518;
-      border-radius: 10px;
-      box-shadow: 0 0 20px #f5c518;
-      transform: perspective(1000px) rotateX(25deg);
-      transform-origin: center top;
+      margin: 20px 0;
+      box-shadow: 0 0 30px #00ffe5;
     }
     #attack-feed {
-      border: 1px solid #333;
-      padding: 10px;
-      height: 200px;
-      overflow-y: scroll;
-      background: rgba(0, 0, 0, 0.5);
-      margin-top: 20px;
+      max-width: 1000px;
+      margin: 20px auto;
+      border: 2px solid #00ffe5;
+      padding: 15px;
+      height: 250px;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.85);
+      box-shadow: inset 0 0 20px #00ffe5;
     }
-    p {
+    #attack-feed p {
       margin: 5px 0;
-      font-size: 0.9em;
-      color: #f5c518;
+      font-size: 0.95em;
+      color: #00ffe5;
+      text-shadow: 0 0 5px #00ffe5;
+      animation: fadeIn 0.5s ease;
     }
     footer {
       text-align: center;
-      margin-top: 30px;
-      color: #aaa;
-      font-size: 0.8em;
-    }
-    .legal {
-      margin-top: 30px;
+      padding: 20px;
       font-size: 0.75em;
-      text-align: center;
-      color: #777;
+      color: #007979;
+      border-top: 2px solid #00ffe5;
+      box-shadow: 0 0 15px #00ffe5;
     }
     .legal a {
-      color: #f5c518;
+      color: #00ffe5;
       text-decoration: none;
     }
     .legal a:hover {
       text-decoration: underline;
     }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>🦇 CyberSentinel: Dark Ops™</h1>
-    <h3>Batman-Inspired Real-Time Cyber Threat Map</h3>
+  <header>
+    <h1>🦇 CyberSentinel: Dark Ops™ (JARVIS Mode)</h1>
+  </header>
 
-    <div id="map"></div>
+  <div id="map"></div>
 
-    <section>
-      <h2>🚨 Live Attack Feed</h2>
-      <div id="attack-feed"></div>
-    </section>
+  <section id="attack-feed"></section>
 
-    <footer>
-      🛡️ Alfred & Master Wayne | CyberSentinel Dark Ops™
-    </footer>
-
-    <div class="legal">
-      <p>&copy; 2025 CyberSentinel Dark Ops™. All rights reserved.</p>
-      <p>Batman and related imagery are trademarks of DC Comics. This project is fan-made and for educational purposes only.</p>
-      <p>
-        <a href="#terms">Terms of Use</a> | <a href="#privacy">Privacy Policy</a>
-      </p>
-    </div>
-
-    <section id="terms" class="legal">
-      <h3>Terms of Use</h3>
-      <p>This tool is for educational and informational purposes only. No actual attack data is collected or displayed; all attacks are simulated. By using this site, you agree not to use it for any malicious activity.</p>
-    </section>
-
-    <section id="privacy" class="legal">
-      <h3>Privacy Policy</h3>
-      <p>This site does not collect, store, or share any personal data. All simulations run client-side. For questions, contact the repository owner via GitHub.</p>
-    </section>
-  </div>
+  <footer class="legal">
+    <p>&copy; 2025 CyberSentinel Dark Ops™. All rights reserved.</p>
+    <p>Batman and related imagery are trademarks of DC Comics. Fan-made project for educational use only.</p>
+    <p>
+      <a href="#terms">Terms of Use</a> | <a href="#privacy">Privacy Policy</a>
+    </p>
+  </footer>
 
   <audio id="alert-sound" src="https://www.soundjay.com/buttons/sounds/beep-07.mp3" preload="auto"></audio>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    const map = L.map('map', {
-      zoomControl: false
-    }).setView([20, 0], 2);
+    const map = L.map('map', { zoomControl: false }).setView([20, 0], 2);
 
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; OpenStreetMap & CartoDB',
@@ -120,8 +101,9 @@
     const attackFeed = document.getElementById("attack-feed");
     const alertSound = document.getElementById("alert-sound");
 
-    const attacks = ["DDoS", "SQL Injection", "XSS", "Ransomware", "Brute Force"];
-    const tools = ["LOIC", "Hydra", "SQLMap", "Metasploit", "Mirai Botnet"];
+    const attacks = ["DDoS", "SQL Injection", "XSS", "Ransomware", "Brute Force", "MITM", "Phishing"];
+    const tools = ["LOIC", "Hydra", "SQLMap", "Metasploit", "Mirai Botnet", "Empire", "Cobalt Strike"];
+
     const locations = [
       { name: "USA", coords: [38.89511, -77.03637] },
       { name: "China", coords: [39.9042, 116.4074] },
@@ -129,7 +111,35 @@
       { name: "India", coords: [28.6139, 77.2090] },
       { name: "Brazil", coords: [-15.7939, -47.8828] },
       { name: "Germany", coords: [52.52, 13.405] },
-      { name: "UK", coords: [51.5074, -0.1278] }
+      { name: "UK", coords: [51.5074, -0.1278] },
+      { name: "France", coords: [48.8566, 2.3522] },
+      { name: "Japan", coords: [35.6895, 139.6917] },
+      { name: "Australia", coords: [-35.2809, 149.13] },
+      { name: "Canada", coords: [45.4215, -75.6972] },
+      { name: "South Korea", coords: [37.5665, 126.978] },
+      { name: "Italy", coords: [41.9028, 12.4964] },
+      { name: "Mexico", coords: [19.4326, -99.1332] },
+      { name: "Spain", coords: [40.4168, -3.7038] },
+      { name: "South Africa", coords: [-25.7479, 28.2293] },
+      { name: "Saudi Arabia", coords: [24.7136, 46.6753] },
+      { name: "Argentina", coords: [-34.6037, -58.3816] },
+      { name: "Indonesia", coords: [-6.2088, 106.8456] },
+      { name: "Turkey", coords: [39.9334, 32.8597] },
+      { name: "Egypt", coords: [30.0444, 31.2357] },
+      { name: "Pakistan", coords: [33.6844, 73.0479] },
+      { name: "Nigeria", coords: [9.0579, 7.4951] },
+      { name: "Ukraine", coords: [50.4501, 30.5234] },
+      { name: "Poland", coords: [52.2297, 21.0122] },
+      { name: "Thailand", coords: [13.7563, 100.5018] },
+      { name: "Vietnam", coords: [21.0285, 105.8542] },
+      { name: "Iran", coords: [35.6892, 51.389] },
+      { name: "Malaysia", coords: [3.139, 101.6869] },
+      { name: "Bangladesh", coords: [23.8103, 90.4125] },
+      { name: "Philippines", coords: [14.5995, 120.9842] },
+      { name: "Colombia", coords: [4.711, -74.0721] },
+      { name: "Chile", coords: [-33.4489, -70.6693] },
+      { name: "Greece", coords: [37.9838, 23.7275] },
+      // Add more countries if needed
     ];
 
     setInterval(() => {
@@ -141,23 +151,19 @@
 
       const logText = `${timestamp} - ${location.name} hit by ${attackType} using ${tool}`;
 
-      // Update feed
       const p = document.createElement("p");
       p.textContent = logText;
       attackFeed.prepend(p);
 
-      // Play alert
       alertSound.play();
 
-      // Add marker effect
       const marker = L.circleMarker(location.coords, {
         radius: 8,
-        color: "#f5c518",
-        fillColor: "#f5c518",
+        color: "#00ffe5",
+        fillColor: "#00ffe5",
         fillOpacity: 0.8
       }).addTo(map);
 
-      // Pulse effect
       let pulse = 8;
       const pulseInterval = setInterval(() => {
         pulse += 2;
@@ -173,3 +179,4 @@
   </script>
 </body>
 </html>
+
