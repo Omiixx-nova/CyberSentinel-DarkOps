@@ -3,15 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🦇 CyberSentinel: Dark Ops (Batman Theme)</title>
-  <link rel="stylesheet" href="style.css"/>
+  <title>🦇 CyberSentinel: Dark Ops (Leaflet 3D-Style)</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
   <style>
     body {
+      margin: 0;
       background: linear-gradient(135deg, #0a0a0a, #1c1c1c);
       color: #e0e0e0;
       font-family: 'Courier New', monospace;
-      margin: 0;
       padding: 20px;
       min-height: 100vh;
     }
@@ -25,11 +24,14 @@
       text-shadow: 0 0 15px #f5c518;
     }
     #map {
-      height: 500px;
+      width: 100%;
+      height: 600px;
       margin-top: 20px;
       border: 2px solid #f5c518;
       border-radius: 10px;
       box-shadow: 0 0 20px #f5c518;
+      transform: perspective(1000px) rotateX(25deg); /* 3D Tilt */
+      transform-origin: center top;
     }
     #attack-feed {
       border: 1px solid #333;
@@ -56,7 +58,7 @@
 
   <div class="container">
     <h1>🦇 CyberSentinel: Dark Ops</h1>
-    <h3>Batman-Inspired Real-Time Cyber Threat Map</h3>
+    <h3>Batman-Inspired Real-Time Cyber Threat Map (Leaflet 3D-Style)</h3>
 
     <div id="map"></div>
 
@@ -68,34 +70,20 @@
     <footer>🛡️ Alfred & Master Wayne | CyberSentinel Dark Ops</footer>
   </div>
 
-  <!-- Sound FX -->
   <audio id="alert-sound" src="https://www.soundjay.com/buttons/sounds/beep-07.mp3" preload="auto"></audio>
 
-  <!-- Firebase (Optional) -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_AUTH_DOMAIN",
-      databaseURL: "YOUR_DB_URL",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_BUCKET",
-      messagingSenderId: "YOUR_MESSAGING_ID",
-      appId: "YOUR_APP_ID"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-  </script>
-
-  <!-- Leaflet + Main Script -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    // Setup map
-    const map = L.map('map').setView([20, 0], 2);
+    // Initialize map
+    const map = L.map('map', {
+      zoomControl: false
+    }).setView([20, 0], 2);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
+    // Dark map tiles (no API key)
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap & CartoDB',
+      subdomains: 'abcd',
+      maxZoom: 19
     }).addTo(map);
 
     const attackFeed = document.getElementById("attack-feed");
@@ -103,75 +91,53 @@
 
     const attacks = ["DDoS", "SQL Injection", "XSS", "Ransomware", "Brute Force"];
     const tools = ["LOIC", "Hydra", "SQLMap", "Metasploit", "Mirai Botnet"];
-    const countries = ["USA", "China", "Russia", "India", "Brazil", "Germany", "UK"];
-    const coordinates = [
-      [38.89511, -77.03637], // USA
-      [39.9042, 116.4074],   // China
-      [55.7558, 37.6173],    // Russia
-      [28.6139, 77.2090],    // India
-      [-15.7939, -47.8828],  // Brazil
-      [52.52, 13.405],       // Germany
-      [51.5074, -0.1278]     // UK
+    const locations = [
+      { name: "USA", coords: [38.89511, -77.03637] },
+      { name: "China", coords: [39.9042, 116.4074] },
+      { name: "Russia", coords: [55.7558, 37.6173] },
+      { name: "India", coords: [28.6139, 77.2090] },
+      { name: "Brazil", coords: [-15.7939, -47.8828] },
+      { name: "Germany", coords: [52.52, 13.405] },
+      { name: "UK", coords: [51.5074, -0.1278] }
     ];
 
     setInterval(() => {
-        let index = Math.floor(Math.random() * countries.length);
-        let country = countries[index];
-        let attackType = attacks[Math.floor(Math.random() * attacks.length)];
-        let tool = tools[Math.floor(Math.random() * tools.length)];
-        let coords = coordinates[index];
+      const randomIndex = Math.floor(Math.random() * locations.length);
+      const location = locations[randomIndex];
+      const attackType = attacks[Math.floor(Math.random() * attacks.length)];
+      const tool = tools[Math.floor(Math.random() * tools.length)];
+      const timestamp = new Date().toLocaleTimeString();
 
-        let log = {
-            timestamp: new Date().toLocaleTimeString(),
-            country,
-            attackType,
-            tool
-        };
+      const logText = `${timestamp} - ${location.name} hit by ${attackType} using ${tool}`;
 
-        let logText = `${log.timestamp} - ${log.country} hit by ${log.attackType} using ${log.tool}`;
+      // Update feed
+      const p = document.createElement("p");
+      p.textContent = logText;
+      attackFeed.prepend(p);
 
-        // Update feed
-        let p = document.createElement("p");
-        p.textContent = logText;
-        attackFeed.prepend(p);
+      // Play alert
+      alertSound.play();
 
-        // Play alert
-        alertSound.play();
+      // Add marker effect
+      const marker = L.circleMarker(location.coords, {
+        radius: 8,
+        color: "#f5c518",
+        fillColor: "#f5c518",
+        fillOpacity: 0.8
+      }).addTo(map);
 
-        // Add marker
-        const marker = L.circleMarker(coords, {
-          radius: 8,
-          color: "#f5c518",
-          fillColor: "#f5c518",
-          fillOpacity: 0.8
-        }).addTo(map);
-
-        // Add pulse effect
-        let pulse = 8;
-        const pulseInterval = setInterval(() => {
-          pulse += 2;
-          if (pulse > 30) {
-            clearInterval(pulseInterval);
-            map.removeLayer(marker);
-          } else {
-            marker.setRadius(pulse);
-            marker.setStyle({opacity: 1 - pulse / 30});
-          }
-        }, 200);
-
-        // 🚀 Log to Firebase if available
-        if (typeof db !== 'undefined') {
-            db.ref('attacks').push(log);
+      // Pulse effect
+      let pulse = 8;
+      const pulseInterval = setInterval(() => {
+        pulse += 2;
+        if (pulse > 30) {
+          clearInterval(pulseInterval);
+          map.removeLayer(marker);
+        } else {
+          marker.setRadius(pulse);
+          marker.setStyle({opacity: 1 - pulse / 30});
         }
-
-        // 🔗 API STUB: Real data fetch example (optional)
-        /*
-        fetch('https://api.your-attack-feed.com/latest')
-          .then(res => res.json())
-          .then(data => {
-              // Process real attack data here
-          });
-        */
+      }, 200);
     }, 2000);
   </script>
 </body>
