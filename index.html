@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🦇 CyberSentinel: Dark Ops (Leaflet 3D-Style)</title>
+  <title>🦇 CyberSentinel: Dark Ops</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
   <style>
     body {
@@ -20,7 +20,7 @@
     }
     h1, h2, h3 {
       text-align: center;
-      color: #f5c518; /* Batman gold */
+      color: #f5c518;
       text-shadow: 0 0 15px #f5c518;
     }
     #map {
@@ -30,7 +30,7 @@
       border: 2px solid #f5c518;
       border-radius: 10px;
       box-shadow: 0 0 20px #f5c518;
-      transform: perspective(1000px) rotateX(25deg); /* 3D Tilt */
+      transform: perspective(1000px) rotateX(25deg);
       transform-origin: center top;
     }
     #attack-feed {
@@ -52,13 +52,26 @@
       color: #aaa;
       font-size: 0.8em;
     }
+    .legal {
+      margin-top: 30px;
+      font-size: 0.75em;
+      text-align: center;
+      color: #777;
+    }
+    .legal a {
+      color: #f5c518;
+      text-decoration: none;
+    }
+    .legal a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <h1>🦇 CyberSentinel: Dark Ops</h1>
-    <h3>Batman-Inspired Real-Time Cyber Threat Map (Leaflet 3D-Style)</h3>
+    <h1>🦇 CyberSentinel: Dark Ops™</h1>
+    <h3>Batman-Inspired Real-Time Cyber Threat Map</h3>
 
     <div id="map"></div>
 
@@ -67,19 +80,37 @@
       <div id="attack-feed"></div>
     </section>
 
-    <footer>🛡️ Alfred & Master Wayne | CyberSentinel Dark Ops</footer>
+    <footer>
+      🛡️ Alfred & Master Wayne | CyberSentinel Dark Ops™
+    </footer>
+
+    <div class="legal">
+      <p>&copy; 2025 CyberSentinel Dark Ops™. All rights reserved.</p>
+      <p>Batman and related imagery are trademarks of DC Comics. This project is fan-made and for educational purposes only.</p>
+      <p>
+        <a href="#terms">Terms of Use</a> | <a href="#privacy">Privacy Policy</a>
+      </p>
+    </div>
+
+    <section id="terms" class="legal">
+      <h3>Terms of Use</h3>
+      <p>This tool is for educational and informational purposes only. No actual attack data is collected or displayed; all attacks are simulated. By using this site, you agree not to use it for any malicious activity.</p>
+    </section>
+
+    <section id="privacy" class="legal">
+      <h3>Privacy Policy</h3>
+      <p>This site does not collect, store, or share any personal data. All simulations run client-side. For questions, contact the repository owner via GitHub.</p>
+    </section>
   </div>
 
   <audio id="alert-sound" src="https://www.soundjay.com/buttons/sounds/beep-07.mp3" preload="auto"></audio>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    // Initialize map
     const map = L.map('map', {
       zoomControl: false
     }).setView([20, 0], 2);
 
-    // Dark map tiles (no API key)
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; OpenStreetMap & CartoDB',
       subdomains: 'abcd',
