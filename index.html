@@ -3,20 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CyberSentinel: Dark Ops Live Threat Map</title>
+  <title>🦇 CyberSentinel: Dark Ops (Batman Theme)</title>
   <link rel="stylesheet" href="style.css"/>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <style>
+    body {
+      background: linear-gradient(135deg, #0a0a0a, #1c1c1c);
+      color: #e0e0e0;
+      font-family: 'Courier New', monospace;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+    }
+    h1, h2, h3 {
+      text-align: center;
+      color: #f5c518; /* Batman gold */
+      text-shadow: 0 0 15px #f5c518;
+    }
+    #map {
+      height: 500px;
+      margin-top: 20px;
+      border: 2px solid #f5c518;
+      border-radius: 10px;
+      box-shadow: 0 0 20px #f5c518;
+    }
+    #attack-feed {
+      border: 1px solid #333;
+      padding: 10px;
+      height: 200px;
+      overflow-y: scroll;
+      background: rgba(0, 0, 0, 0.5);
+      margin-top: 20px;
+    }
+    p {
+      margin: 5px 0;
+      font-size: 0.9em;
+      color: #f5c518;
+    }
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      color: #aaa;
+      font-size: 0.8em;
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Banner -->
-  <div class="hero-banner">
-    <img src="https://i.ibb.co/0jsyjKj/transformers-batman-banner.jpg" alt="CyberSentinel Dark Ops Banner">
-  </div>
-
   <div class="container">
-    <h1>⚡ CyberSentinel: Dark Ops 🦇</h1>
-    <h3>Transformers x Anime x Batman Real-Time Cyber Threat Map</h3>
+    <h1>🦇 CyberSentinel: Dark Ops</h1>
+    <h3>Batman-Inspired Real-Time Cyber Threat Map</h3>
 
     <div id="map"></div>
 
@@ -50,6 +90,89 @@
 
   <!-- Leaflet + Main Script -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="script.js"></script>
+  <script>
+    // Setup map
+    const map = L.map('map').setView([20, 0], 2);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const attackFeed = document.getElementById("attack-feed");
+    const alertSound = document.getElementById("alert-sound");
+
+    const attacks = ["DDoS", "SQL Injection", "XSS", "Ransomware", "Brute Force"];
+    const tools = ["LOIC", "Hydra", "SQLMap", "Metasploit", "Mirai Botnet"];
+    const countries = ["USA", "China", "Russia", "India", "Brazil", "Germany", "UK"];
+    const coordinates = [
+      [38.89511, -77.03637], // USA
+      [39.9042, 116.4074],   // China
+      [55.7558, 37.6173],    // Russia
+      [28.6139, 77.2090],    // India
+      [-15.7939, -47.8828],  // Brazil
+      [52.52, 13.405],       // Germany
+      [51.5074, -0.1278]     // UK
+    ];
+
+    setInterval(() => {
+        let index = Math.floor(Math.random() * countries.length);
+        let country = countries[index];
+        let attackType = attacks[Math.floor(Math.random() * attacks.length)];
+        let tool = tools[Math.floor(Math.random() * tools.length)];
+        let coords = coordinates[index];
+
+        let log = {
+            timestamp: new Date().toLocaleTimeString(),
+            country,
+            attackType,
+            tool
+        };
+
+        let logText = `${log.timestamp} - ${log.country} hit by ${log.attackType} using ${log.tool}`;
+
+        // Update feed
+        let p = document.createElement("p");
+        p.textContent = logText;
+        attackFeed.prepend(p);
+
+        // Play alert
+        alertSound.play();
+
+        // Add marker
+        const marker = L.circleMarker(coords, {
+          radius: 8,
+          color: "#f5c518",
+          fillColor: "#f5c518",
+          fillOpacity: 0.8
+        }).addTo(map);
+
+        // Add pulse effect
+        let pulse = 8;
+        const pulseInterval = setInterval(() => {
+          pulse += 2;
+          if (pulse > 30) {
+            clearInterval(pulseInterval);
+            map.removeLayer(marker);
+          } else {
+            marker.setRadius(pulse);
+            marker.setStyle({opacity: 1 - pulse / 30});
+          }
+        }, 200);
+
+        // 🚀 Log to Firebase if available
+        if (typeof db !== 'undefined') {
+            db.ref('attacks').push(log);
+        }
+
+        // 🔗 API STUB: Real data fetch example (optional)
+        /*
+        fetch('https://api.your-attack-feed.com/latest')
+          .then(res => res.json())
+          .then(data => {
+              // Process real attack data here
+          });
+        */
+    }, 2000);
+  </script>
 </body>
 </html>
