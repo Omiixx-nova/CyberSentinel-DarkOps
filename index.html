@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CyberSentinel: Dark Ops Live Threat Map</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+</head>
+<body>
+
+  <!-- Banner -->
+  <div class="hero-banner">
+    <img src="https://i.ibb.co/0jsyjKj/transformers-batman-banner.jpg" alt="CyberSentinel Dark Ops Banner">
+  </div>
+
+  <div class="container">
+    <h1>⚡ CyberSentinel: Dark Ops 🦇</h1>
+    <h3>Transformers x Anime x Batman Real-Time Cyber Threat Map</h3>
+
+    <div id="map"></div>
+
+    <section>
+      <h2>🚨 Live Attack Feed</h2>
+      <div id="attack-feed"></div>
+    </section>
+
+    <footer>🛡️ Alfred & Master Wayne | CyberSentinel Dark Ops</footer>
+  </div>
+
+  <!-- Sound FX -->
+  <audio id="alert-sound" src="https://www.soundjay.com/buttons/sounds/beep-07.mp3" preload="auto"></audio>
+
+  <!-- Firebase (Optional) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      databaseURL: "YOUR_DB_URL",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_ID",
+      appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+  </script>
+
+  <!-- Leaflet + Main Script -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
