@@ -6,60 +6,57 @@
   <title>CyberSentinel: Dark Ops</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
   <style>
-    body {
+    html, body {
+      height: 100%;
       margin: 0;
       background: #000;
-      color: #00ffe5;
       font-family: 'Courier New', monospace;
-      overflow-x: hidden;
-    }
-    header {
-      text-align: center;
-      padding: 20px;
-      border-bottom: 2px solid #00ffe5;
-      box-shadow: 0 0 20px #00ffe5;
-    }
-    header h1 {
-      font-size: 2em;
-      color: #00ffe5;
-      text-shadow: 0 0 10px #00ffe5, 0 0 20px #00ffe5;
+      overflow: hidden;
     }
     #map {
+      position: absolute;
+      top: 0; left: 0;
       width: 100%;
-      height: 600px;
-      margin: 20px 0;
-      box-shadow: 0 0 30px #00ffe5;
+      height: 100%;
+      z-index: 1;
     }
     #attack-feed {
-      max-width: 1000px;
-      margin: 20px auto;
-      border: 2px solid #00ffe5;
-      padding: 15px;
-      height: 250px;
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      width: 350px;
+      max-height: 300px;
       overflow-y: auto;
-      background: rgba(0, 0, 0, 0.85);
-      box-shadow: inset 0 0 20px #00ffe5;
+      border: 2px solid #00ffe5;
+      background: rgba(0, 0, 0, 0.65);
+      padding: 15px;
+      z-index: 999;
+      box-shadow: 0 0 20px #00ffe5;
+      color: #00ffe5;
+      text-shadow: 0 0 5px #00ffe5;
     }
     #attack-feed p {
       margin: 5px 0;
-      font-size: 0.95em;
-      color: #00ffe5;
-      text-shadow: 0 0 5px #00ffe5;
+      font-size: 0.85em;
       animation: fadeIn 0.5s ease;
     }
     footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
       text-align: center;
-      padding: 20px;
-      font-size: 0.75em;
+      font-size: 0.7em;
       color: #007979;
-      border-top: 2px solid #00ffe5;
-      box-shadow: 0 0 15px #00ffe5;
+      z-index: 999;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 5px;
+      border-top: 1px solid #00ffe5;
     }
-    .legal a {
+    footer a {
       color: #00ffe5;
       text-decoration: none;
     }
-    .legal a:hover {
+    footer a:hover {
       text-decoration: underline;
     }
     @keyframes fadeIn {
@@ -70,20 +67,14 @@
 </head>
 <body>
 
-  <header>
-    <h1>🦇 CyberSentinel: Dark Ops™ (JARVIS Mode)</h1>
-  </header>
-
   <div id="map"></div>
 
   <section id="attack-feed"></section>
 
   <footer class="legal">
-    <p>&copy; 2025 CyberSentinel Dark Ops™. All rights reserved.</p>
-    <p>Batman and related imagery are trademarks of DC Comics. Fan-made project for educational use only.</p>
-    <p>
-      <a href="#terms">Terms of Use</a> | <a href="#privacy">Privacy Policy</a>
-    </p>
+    &copy; 2025 CyberSentinel Dark Ops™. Batman is a trademark of DC Comics. Fan-made for educational use only.
+    <br>
+    <a href="#terms">Terms</a> | <a href="#privacy">Privacy</a>
   </footer>
 
   <audio id="alert-sound" src="https://www.soundjay.com/buttons/sounds/beep-07.mp3" preload="auto"></audio>
@@ -134,12 +125,10 @@
       { name: "Vietnam", coords: [21.0285, 105.8542] },
       { name: "Iran", coords: [35.6892, 51.389] },
       { name: "Malaysia", coords: [3.139, 101.6869] },
-      { name: "Bangladesh", coords: [23.8103, 90.4125] },
       { name: "Philippines", coords: [14.5995, 120.9842] },
       { name: "Colombia", coords: [4.711, -74.0721] },
       { name: "Chile", coords: [-33.4489, -70.6693] },
       { name: "Greece", coords: [37.9838, 23.7275] },
-      // Add more countries if needed
     ];
 
     setInterval(() => {
